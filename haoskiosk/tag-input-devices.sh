@@ -50,15 +50,15 @@ for dev in /dev/input/event*; do
     if [[ $ev != none ]]; then
         if [[ $key != none && $key_count -gt 20 && $rel = 0 && $abs = 0 ]]; then
             device_type=keyboard
-        elif [[ $key != none && $key_count -gt 2 && ($rel != none && $rel != 0) && $abs = 0 ]]; then
+        elif [[ $key != none && $key_count -gt 2 && $rel != none && $abs = 0 ]]; then
             device_type=mouse # No edge cases, all mice, like roccat and logitech
         elif [[ $key != none && $key_count -ge 5 && $rel = 0 && ("$abs" =~ 0000000[3-7] || "$abs" =~ 0000001[6-7]) ]]; then
             device_type=joystick #Gamepads, joysticks, not touchscreens with couple buttons
         elif [[ $rel = 0 && ("$abs" =~ 0000000[5-7] || "$abs" =~ 0000001[6-7]) ]]; then
             device_type=joystick #Default joysticks and/or controller
-        elif [[ $key != none && "$key_count" -lt 4 && ($abs != none && $abs != 0) && $rel = 0 ]]; then
+        elif [[ $key != none && "$key_count" -lt 4 && $abs != none && $rel = 0 ]]; then
             device_type=touchscreen
-        elif [[ $key != none && "$key_count" -lt 3 && ($abs != none && $abs != 0) && ($rel != none && $rel != 0) && $key != none ]]; then
+        elif [[ $key != none && "$key_count" -lt 3 && $abs != none && $rel != none ]]; then
             device_type=touchpad
         fi
     fi
