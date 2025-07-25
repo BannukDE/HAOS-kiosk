@@ -22,8 +22,7 @@ for dev in /dev/input/event*; do
     input_num=${devname#event}
 
     # Get device path to check if USB
-    udevinfo=$(udevadm info "$dev")
-    devpath=$(grep -m1 "DEVPATH" <<< "$udevinfo" | cut -d= -f2)
+    devpath=$(udevadm info "$dev" | grep -m1 DEVPATH | cut -d= -f2)
     if [[ ! $devpath =~ /usb[0-9]+.*[0-9]{4}:[0-9A-Fa-f]{4}:[0-9A-Fa-f]{4} ]]; then
         echo "$devname: Skipped (non-USB)"
         continue
@@ -47,16 +46,18 @@ for dev in /dev/input/event*; do
 
     # Classify device type
     device_type=unknown
-    if [[ "$(grep -m1 ID_INPUT_KEYBOARD <<< "$udevinfo" | cut -d= -f2)" == "1" ]]; then
-        device_type=keyboard
-    elif [[ "$(grep -m1 ID_INPUT_MOUSE <<< "$udevinfo" | cut -d= -f2)" == "1" ]]; then
-        device_type=mouse
-    elif [[ "$(grep -m1 ID_INPUT_TOUCHSCREEN <<< "$udevinfo" | cut -d= -f2)" == "1" ]]; then
-        device_type=touchscreen
-    elif [[ "$(grep -m1 ID_INPUT_JOYSTICK <<< "$udevinfo" | cut -d= -f2)" == "1" ]]; then
-        device_type=joystick
-    else
-        device_type=unknown
+    if [[ $ev != none ]]; then
+        if [[ $key != none && $rel = 0 && $abs = 0 ]]; then
+            device_type=keyboard
+        elif [[ $rel != none && $abs = 0 ]]; then
+            device_type=mouse
+        elif [[ "$abs" =~ 000000[3-7] ]]; then # has R-Stick or Throttle or Rudder or HAT
+            device_type=joystick
+        elif [[ $abs != none && $rel = 0 ]]; then
+            device_type=touchscreen
+        elif [[ $abs != none && $rel != none && $key != none ]]; then
+            device_type=touchpad
+        fi
     fi
 
     # Skip unclassified devices
