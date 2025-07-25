@@ -18,6 +18,7 @@ RUN apk update && apk add --no-cache \
     udev \
     libinput-udev \
     libevdev \
+    libinput-tools \
     mesa-dri-gallium \
     mesa-egl \
     mesa-gles \
