@@ -22,7 +22,8 @@ for dev in /dev/input/event*; do
     input_num=${devname#event}
 
     # Get device path to check if USB
-    devpath=$(udevadm info "$dev" | grep -m1 DEVPATH | cut -d= -f2)
+    udevinfo=$(udevadm info "$dev")
+    devpath=$(echo "$udevinfo" | grep -m1 DEVPATH | cut -d= -f2)
     if [[ ! $devpath =~ /usb[0-9]+.*[0-9]{4}:[0-9A-Fa-f]{4}:[0-9A-Fa-f]{4} ]]; then
         echo "$devname: Skipped (non-USB)"
         continue
@@ -46,11 +47,13 @@ for dev in /dev/input/event*; do
 
     # Classify device type
     device_type=unknown
-    if [[ $ev != none && $key != none && $key_count -gt 2 && $rel = 0 && $abs = 0 ]]; then
+    if echo "$udevinfo" | grep -q "ID_INPUT_TOUCHSCREEN=1"; then
+        device_type=touchscreen
+    elif echo "$udevinfo" | grep -q "ID_INPUT_KEYBOARD=1"; then
         device_type=keyboard
-    elif [[ $rel != none && $key_count -le 2 && $abs = 0 ]]; then
+    elif echo "$udevinfo" | grep -q "ID_INPUT_MOUSE=1"; then
         device_type=mouse
-    elif [[ $ev = 1b || $abs != none ]]; then
+    elif echo "$udevinfo" | grep -q "ID_INPUT_JOYSTICK=1"; then
         device_type=joystick
     fi
 
