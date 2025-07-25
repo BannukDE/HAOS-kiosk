@@ -169,7 +169,7 @@ printf '%*s\n' 80 '' | tr ' ' '#' #Trailer
 echo "."
 
 #Xorg "$DISPLAY" -layout "Layout$((HDMI_PORT - 1))" </dev/null &
-Xorg "$DISPLAY" </dev/null 2>&1 | while read -r line; do bashio::log.info "[XORG] $line"; done &
+Xorg "$DISPLAY" </dev/null 2>&1 &
 
 XSTARTUP=30
 for ((i=0; i<=XSTARTUP; i++)); do
