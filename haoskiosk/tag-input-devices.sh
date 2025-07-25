@@ -40,16 +40,15 @@ for dev in /dev/input/event*; do
     syspath="/sys${devpath%/event*}/capabilities"
     ev=$(cat "$syspath/ev" 2>/dev/null || echo none)
     key=$(cat "$syspath/key" 2>/dev/null || echo none)
+    rel=$(cat "$syspath/rel" 2>/dev/null || echo none)
+    abs=$(cat "$syspath/abs" 2>/dev/null || echo none)
     key_count=$(echo "$key" | tr ' ' '\n' | grep -vc '^0$')
-    rel=$(grep -o '[1-9a-fA-F]' "$syspath/rel" 2>/dev/null | wc -l)
-    abs=$(grep -o '[1-9a-fA-F]' "$syspath/abs" 2>/dev/null | wc -l)
-
     # Classify device type
     device_type=unknown
     if [[ $ev != none ]]; then
-        if [[ $key != none && $key_count -gt 10 && $rel = 0 && $abs = 0 ]]; then
+        if [[ $key != none && $key_count -gt 20 && $rel = 0 && $abs = 0 ]]; then
             device_type=keyboard
-        elif [[ $rel != none && $abs = 0 ]]; then
+        elif [[ $key != none && $key_count -gt 2 $rel != none && $abs = 0 ]]; then
             device_type=mouse # No edge cases, all mice, like roccat and logitech
         elif [[ $key != none && $key_count -ge 5 && $rel = 0 && ("$abs" =~ 0000000[3-7] || "$abs" =~ 0000001[6-7]) ]]; then
             device_type=joystick #Gamepads, joysticks, not touchscreens with couple buttons
@@ -79,7 +78,7 @@ for dev in /dev/input/event*; do
     udevadm test "$devpath" >/dev/null 2>&1
 
     # Output result
-    echo "$devname: $device_type (ID_INPUT=1, Group=$group)"
+    echo "$devname: $device_type (ID_INPUT=1, Group=$group, ev=$ev, keys=$key_count, rel=$rel, abs=$abs)"
 done
 
 # Show libinput devices with indented output
