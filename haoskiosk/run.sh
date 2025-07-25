@@ -242,7 +242,7 @@ fi
         sleep 1
     done
 )&
-
+grep -i 'using input driver' /var/log/Xorg.0.log
 if [ "$DEBUG_MODE" != true ]; then
     ### Run Luakit in the foreground
     bashio::log.info "Launching Luakit browser: $HA_URL/$HA_DASHBOARD"
