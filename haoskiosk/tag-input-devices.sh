@@ -84,9 +84,9 @@ done
 
 # Show libinput devices with indented output
 echo "libinput list-devices found:"
-libinput list-devices 2>/dev/null | awk '
-  /^Device:/ {devname=substr($0, 9)}
-  /^Kernel:/ {
-    split($2, a, "/");
-    printf "  %s: %s\n", a[length(a)], devname
-}'
+libinput list-devices #2>/dev/null | awk '
+  #/^Device:/ {devname=substr($0, 9)}
+  #/^Kernel:/ {
+  #  split($2, a, "/");
+   # printf "  %s: %s\n", a[length(a)], devname
+#}'
