@@ -35,6 +35,7 @@ fi
 
 echo "Applying rotation $ROTATION ($MATRIX) to:"
 
+xinput list-props 6
 # Apply 'xinput' to inputs matching touch, touchscreen or stylus
 while IFS= read -r id; do
     name=$(xinput list --name-only "$id" 2>/dev/null)
@@ -42,7 +43,6 @@ while IFS= read -r id; do
     [[ "$lc_name" =~ (^|[^[:alnum:]_])(touch|touchscreen|stylus)([^[:alnum:]_]|$) ]] || continue
     props="$(xinput list-props "$id" 2>/dev/null)"
     [[ "$props" = *"Coordinate Transformation Matrix"* ]] ||  continue #No transformation matrix
-
     if xinput set-prop "$id" "Coordinate Transformation Matrix" "$MATRIX" 2>/dev/null; then
         echo -n "  SUCCESS: "
     else
