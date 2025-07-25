@@ -40,9 +40,9 @@ for dev in /dev/input/event*; do
     syspath="/sys${devpath%/event*}/capabilities"
     ev=$(cat "$syspath/ev" 2>/dev/null || echo none)
     key=$(cat "$syspath/key" 2>/dev/null || echo none)
-    rel=$(cat "$syspath/rel" 2>/dev/null || echo none)
-    abs=$(cat "$syspath/abs" 2>/dev/null || echo none)
     key_count=$(echo "$key" | tr ' ' '\n' | grep -vc '^0$')
+    rel=$(grep -o '[1-9a-fA-F]' "$syspath/rel" 2>/dev/null | wc -l)
+    abs=$(grep -o '[1-9a-fA-F]' "$syspath/abs" 2>/dev/null | wc -l)
 
     # Classify device type
     device_type=unknown
