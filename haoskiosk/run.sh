@@ -248,5 +248,8 @@ if [ "$DEBUG_MODE" != true ]; then
     exec luakit -U "$HA_URL/$HA_DASHBOARD"
 else ### Debug mode
     bashio::log.info "Entering debug mode (X & Openbox but no luakit browser)..."
-    exec sleep infinite
+    while true; do
+        libinput debug-events --device=/dev/input/event6
+        sleep 1
+    done
 fi
