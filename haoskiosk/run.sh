@@ -246,8 +246,12 @@ grep -i 'using input driver' /var/log/Xorg.0.log
 if [ "$DEBUG_MODE" != true ]; then
     ### Run Luakit in the foreground
     bashio::log.info "Launching Luakit browser: $HA_URL/$HA_DASHBOARD"
+    libinput debug-events --device=/dev/input/eventX
     exec luakit -U "$HA_URL/$HA_DASHBOARD"
+    libinput debug-events --device=/dev/input/eventX
 else ### Debug mode
     bashio::log.info "Entering debug mode (X & Openbox but no luakit browser)..."
+    libinput debug-events --device=/dev/input/eventX
     exec sleep infinite
+    libinput debug-events --device=/dev/input/eventX
 fi
