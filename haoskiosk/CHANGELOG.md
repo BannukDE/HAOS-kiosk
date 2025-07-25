@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.0.0 - July 2025
+
+- Switched from (legacy) framebuffer-based video (fbdev) to OpenGL/DRI
+  video
+- Switched from (legacy) evdev input handling to libinput input handling
+- Added 'rotation' configuration to rotate display
+- Added corresponding rotation boolean to determine whether to also rotate
+  touch inuputs
+- Simplified 'xorg.conf' to minimal necessary config
+- Added ability to append to or replace default 'xorg.conf'
+- Improved userconf.lua code
+- Added back (local) DBUS to allow for inter-process luakit communication
+  (e.g., to allow use of unique instance)
+
 ## v0.9.9 - July 2025
 
 - Removed remounting of /dev/ ro (which caused HAOS updates to fail)
