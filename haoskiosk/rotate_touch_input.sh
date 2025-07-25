@@ -42,8 +42,10 @@ while IFS= read -r id; do
     lc_name="${name,,}"
     [[ "$lc_name" =~ (^|[^[:alnum:]_])(touch|touchscreen|stylus)([^[:alnum:]_]|$) ]] || continue
     props="$(xinput list-props "$id" 2>/dev/null)"
-    [[ "$props" = *"Coordinate Transformation Matrix"* ]] ||  continue #No transformation matrix
-    if xinput set-prop "$id" "Coordinate Transformation Matrix" "$MATRIX" 2>/dev/null; then
+    [[ "$props" = *"libinput Calibration Matrix"* ]] || [[ "$props" = *"Coordinate Transformation Matrix"* ]] ||  continue #No transformation matrix
+    if xinput set-prop "$id" "libinput Calibration Matrix" "$MATRIX" 2>/dev/null; then
+        echo -n "  SUCCESS: "
+    elif xinput set-prop "$id" "Coordinate Transformation Matrix" "$MATRIX" 2>/dev/null; then
         echo -n "  SUCCESS: "
     else
         echo -n "  FAILURE: "
