@@ -47,11 +47,11 @@ for dev in /dev/input/event*; do
     # Classify device type
     device_type=unknown
     if [[ $ev != none ]]; then
-        if [[ $key != none && $rel = 0 && $abs = 0 ]]; then
+        if [[ $key != none && $key_count -gt 10 && $rel = 0 && $abs = 0 ]]; then
             device_type=keyboard
         elif [[ $rel != none && $abs = 0 ]]; then
             device_type=mouse
-        elif [[ "$abs" =~ 000000[3-7] ]]; then # has R-Stick or Throttle or Rudder or HAT
+        elif [[ $key != none && $key_count -ge 4 && $rel = 0 && ("$abs" =~ 0000000[4-7] || "$abs" =~ 0000001[6-7]) ]]; then # has R-Stick or Throttle or Rudder or HAT (two edge cases with atari and commodore)
             device_type=joystick
         elif [[ $abs != none && $rel = 0 ]]; then
             device_type=touchscreen
